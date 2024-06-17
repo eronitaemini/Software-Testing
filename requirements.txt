@@ -1,0 +1,5 @@
+requests
+python-dotenv
+locust
+gevent==21.1.2
+greenlet==1.0.0
