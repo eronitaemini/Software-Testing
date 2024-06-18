@@ -241,13 +241,8 @@ class PeakLoadSpike(HttpUser):
         num_batches = total_requests // batch_size
 
         for _ in range(num_batches):
-            batch_requests = []
-
             for _ in range(batch_size):
-                batch_requests.append(self.client.get("https://fakestoreapi.com/products", name="/products"))
-
-           
-            responses = self.client.send(batch_requests)
+                self.client.get("https://fakestoreapi.com/products", name="/products")
 
 
 
@@ -267,6 +262,7 @@ class EndpointLoadTesting(HttpUser):
         self.client.get("https://fakestoreapi.com/users")
 
 
+
 class ScenarioBasedLoad(HttpUser):
     wait_time = between(1, 5)
 
@@ -278,35 +274,35 @@ class ScenarioBasedLoad(HttpUser):
 
     @task
     def browse_products(self):
-        self.client.get("https://fakestoreapi.com/products")
+        self.client.get("/products")
 
     @task
     def add_to_cart(self):
         product_id = self.random_product_id()
         quantity = self.random_quantity()
         payload = {
-            "userId": random.randint(1, 10),  
+            "userId": random.randint(1, 10),
             "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "products": [{"productId": product_id, "quantity": quantity}]
         }
-        self.client.post("https://fakestoreapi.com/carts", json=payload)
+        self.client.post("/carts", json=payload)
 
     @task
     def update_cart(self):
-        cart_id = random.randint(1, 100) 
+        cart_id = random.randint(1, 100)
         product_id = self.random_product_id()
         quantity = self.random_quantity()
         payload = {
-            "userId": random.randint(1, 10),  
+            "userId": random.randint(1, 10),
             "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "products": [{"productId": product_id, "quantity": quantity}]
         }
-        self.client.put(f"https://fakestoreapi.com/carts/{cart_id}", json=payload)
+        self.client.put(f"/carts/{cart_id}", json=payload)
 
     @task
     def delete_cart(self):
-        cart_id = random.randint(1, 100) 
-        self.client.delete(f"https://fakestoreapi.com/carts/{cart_id}")
+        cart_id = random.randint(1, 100)
+        self.client.delete(f"/carts/{cart_id}")
 
 
 if __name__ == "__main__":
