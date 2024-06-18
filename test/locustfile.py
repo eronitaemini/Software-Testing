@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from locust import HttpUser, task, between
+from locust import HttpUser, task, between, events
 import os
 from dotenv import load_dotenv
 import json
@@ -193,6 +193,69 @@ class FlashSaleOrderSpike(HttpUser):
                 "products": [{"productId":  product_in_sale_id, "quantity": quantity}]
             }
         self.client.post('https://fakestoreapi.com/carts', json=payload)
+
+########
+
+class ErrorHandlingUnderLoad(HttpUser):
+    wait_time = between(1, 5)
+
+    @task
+    def spike_with_errors(self):
+        
+        self.client.get("https://fakestoreapi.com/products")
+
+        
+        self.client.get("https://fakestoreapi.com/products/invalid")
+
+        
+        self.client.get("https://fakestoreapi.com/users", headers={"Authorization": "Bearer invalid_token"})
+
+
+class APIRateLimitTesting(HttpUser):
+    wait_time = between(1, 5)
+
+    @task
+    def exceed_rate_limit(self):
+        for _ in range(100):
+            self.client.get("https://fakestoreapi.com/products")
+
+
+class GeographicalLoadSpike(HttpUser):
+    wait_time = between(1, 5)
+
+    @task
+    def geo_load_spike(self):
+       
+      regions = ["US", "EU", "ASIA"]
+      region = random.choice(regions)
+      self.client.get("https://fakestoreapi.com/products", headers={"Region": region})
+
+
+class PeakLoadSpike(HttpUser):
+    wait_time = between(1, 5)
+
+    @task
+    def peak_load(self):
+        for _ in range(10000):
+            self.client.get("https://fakestoreapi.com/products")
+
+
+
+
+class EndpointLoadTesting(HttpUser):
+    wait_time = between(1, 5)
+
+    @task
+    def load_test_products(self):
+        self.client.get("https://fakestoreapi.com/products")
+
+    @task
+    def load_test_categories(self):
+        self.client.get("https://fakestoreapi.com/products/categories")
+
+    @task
+    def load_test_users(self):
+        self.client.get("https://fakestoreapi.com/users")
 
 
 
