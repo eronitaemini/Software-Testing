@@ -267,6 +267,47 @@ class EndpointLoadTesting(HttpUser):
         self.client.get("https://fakestoreapi.com/users")
 
 
+class ScenarioBasedLoad(HttpUser):
+    wait_time = between(1, 5)
+
+    def random_product_id(self):
+        return random.randint(1, 20)
+
+    def random_quantity(self):
+        return random.randint(1, 5)
+
+    @task
+    def browse_products(self):
+        self.client.get("https://fakestoreapi.com/products")
+
+    @task
+    def add_to_cart(self):
+        product_id = self.random_product_id()
+        quantity = self.random_quantity()
+        payload = {
+            "userId": random.randint(1, 10),  
+            "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "products": [{"productId": product_id, "quantity": quantity}]
+        }
+        self.client.post("https://fakestoreapi.com/carts", json=payload)
+
+    @task
+    def update_cart(self):
+        cart_id = random.randint(1, 100) 
+        product_id = self.random_product_id()
+        quantity = self.random_quantity()
+        payload = {
+            "userId": random.randint(1, 10),  
+            "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "products": [{"productId": product_id, "quantity": quantity}]
+        }
+        self.client.put(f"https://fakestoreapi.com/carts/{cart_id}", json=payload)
+
+    @task
+    def delete_cart(self):
+        cart_id = random.randint(1, 100) 
+        self.client.delete(f"https://fakestoreapi.com/carts/{cart_id}")
+
 
 if __name__ == "__main__":
     import os
