@@ -236,9 +236,18 @@ class PeakLoadSpike(HttpUser):
 
     @task
     def peak_load(self):
-        for _ in range(10000):
-            self.client.get("https://fakestoreapi.com/products")
+        batch_size = 100  
+        total_requests = 10000
+        num_batches = total_requests // batch_size
 
+        for _ in range(num_batches):
+            batch_requests = []
+
+            for _ in range(batch_size):
+                batch_requests.append(self.client.get("https://fakestoreapi.com/products", name="/products"))
+
+           
+            responses = self.client.send(batch_requests)
 
 
 
