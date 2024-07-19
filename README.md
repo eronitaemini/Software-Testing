@@ -1,9 +1,11 @@
+**Locust-Based Load Testing
+**
 **Introduction**:
 
 This project is part of Software Testing and Analysis, focusing on Load Testing, specifically spike testing. Spike testing is a subfield of load testing used to assess a system's performance under sudden and immediate increases in load. This helps determine how well the system can handle unexpected loads and surges in traffic.
 
 The tests are conducted on the FakeStore API, a public API that provides mock data for testing purposes. Using Locust, we assess the API's performance under various user loads and scenarios.
-
+https://fakestoreapi.com/
 **Solution**:
 
 We implemented several test scenarios using Locust:
