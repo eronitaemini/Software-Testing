@@ -6,6 +6,7 @@ This project is part of Software Testing and Analysis, focusing on Load Testing,
 
 The tests are conducted on the FakeStore API, a public API that provides mock data for testing purposes. Using Locust, we assess the API's performance under various user loads and scenarios.
 https://fakestoreapi.com/
+
 **Solution**:
 
 We implemented several test scenarios using Locust:
